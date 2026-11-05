@@ -15,8 +15,18 @@ export default defineConfig({
   },
   test: {
     environment: 'happy-dom',
+    pool: 'vmThreads',
     setupFiles: ['./vitest.setup.ts'],
     include: ['src/**/*.test.ts', 'src/**/*.test.tsx'],
     exclude: ['src/**/*.evaluator.test.tsx'],
+    coverage: {
+      include: ['src/**/*.{ts,tsx}'],
+      exclude: [
+        'src/**/*.test.ts',
+        'src/**/*.test.tsx',
+        'src/main.tsx',
+        'src/vite-env.d.ts',
+      ],
+    },
   },
 });

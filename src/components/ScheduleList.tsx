@@ -1,5 +1,5 @@
-import { css } from 'styled-system/css';
 import { useState } from 'react';
+import { css } from 'styled-system/css';
 
 import { copy, type Session } from '../data/fixtures';
 
@@ -28,7 +28,9 @@ const detailsButtonClass = css({
 });
 
 export function ScheduleList({ sessions }: ScheduleListProps) {
-  const [expandedIds, setExpandedIds] = useState<ReadonlySet<string>>(() => new Set());
+  const [expandedIds, setExpandedIds] = useState<ReadonlySet<string>>(
+    () => new Set(),
+  );
 
   const handleToggle = (sessionId: string) => {
     setExpandedIds((current) => {
@@ -73,14 +75,23 @@ export function ScheduleList({ sessions }: ScheduleListProps) {
               p: '4',
             })}
           >
-            <h2 className={css({ color: 'text.primary', textStyle: 'h_small' })}>{session.name}</h2>
-            <p className={css({ color: 'text.secondary', textStyle: 't_small' })}>
+            <h2
+              className={css({ color: 'text.primary', textStyle: 'h_small' })}
+            >
+              {session.name}
+            </h2>
+            <p
+              className={css({ color: 'text.secondary', textStyle: 't_small' })}
+            >
               {session.venue}
             </p>
-            <p className={css({ color: 'text.primary', textStyle: 't_small' })}>{session.status}</p>
+            <p className={css({ color: 'text.primary', textStyle: 't_small' })}>
+              {session.status}
+            </p>
             <button
               type="button"
               aria-expanded={isExpanded}
+              aria-controls={`${session.id}-details`}
               className={detailsButtonClass}
               onClick={() => handleToggle(session.id)}
             >
@@ -88,6 +99,7 @@ export function ScheduleList({ sessions }: ScheduleListProps) {
             </button>
             {isExpanded && (
               <p
+                id={`${session.id}-details`}
                 className={css({
                   color: 'text.primary',
                   flexBasis: '100%',

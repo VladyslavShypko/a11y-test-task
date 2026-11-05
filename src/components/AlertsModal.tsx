@@ -1,6 +1,6 @@
+import { type KeyboardEvent, useEffect, useRef } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
-import { type KeyboardEvent, useEffect, useRef } from 'react';
 
 import { copy } from '../data/fixtures';
 
@@ -78,10 +78,12 @@ export function AlertsModal({ onClose }: AlertsModalProps) {
     >
       <div
         role="dialog"
+        aria-modal="true"
+        aria-labelledby="alert-dialog-title"
         onKeyDown={handleKeyDown}
         className={css({
-          bg: 'surface.elevated',
-          borderColor: 'border.secondary',
+          bg: 'surface.base',
+          borderColor: 'border.primary',
           borderRadius: 'lg',
           borderStyle: 'solid',
           borderWidth: 'xs',
@@ -92,12 +94,19 @@ export function AlertsModal({ onClose }: AlertsModalProps) {
         })}
       >
         <Stack gap="4">
-          <h2 className={css({ color: 'text.primary', textStyle: 'h_small' })}>
+          <h2
+            id="alert-dialog-title"
+            className={css({ color: 'text.primary', textStyle: 'h_small' })}
+          >
             {copy.alertTitle}
           </h2>
           <Stack gap="3">
             <label className={labelClass}>
-              <input ref={heatChangesRef} type="checkbox" className={checkboxClass} />
+              <input
+                ref={heatChangesRef}
+                type="checkbox"
+                className={checkboxClass}
+              />
               {copy.heatChanges}
             </label>
             <label className={labelClass}>

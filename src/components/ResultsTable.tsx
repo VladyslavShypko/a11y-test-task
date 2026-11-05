@@ -1,8 +1,9 @@
+import { useState } from 'react';
 import { css, cx } from 'styled-system/css';
 import { Box } from 'styled-system/jsx';
-import { useState } from 'react';
 
 import { type AthleteResult, copy, results } from '../data/fixtures';
+import { SortIndicator } from './SortIndicator';
 
 type SortColumn = 'rank' | 'bib';
 
@@ -48,10 +49,13 @@ const bodyCellClass = css({
 });
 
 const sortButtonClass = css({
+  alignItems: 'center',
   bg: 'transparent',
   borderWidth: '0',
   color: 'text.primary',
   cursor: 'pointer',
+  display: 'inline-flex',
+  gap: '2',
   p: '0',
   textStyle: 't_small_b',
   _focusVisible: {
@@ -81,18 +85,25 @@ const sortResults = (
   });
 
 export function ResultsTable() {
-  const [column, setColumn] = useState<SortColumn>('rank');
-  const [directions, setDirections] = useState<ColumnDirections>({ rank: 'asc', bib: 'asc' });
+  const [column, setColumn] = useState<SortColumn | null>(null);
+  const [directions, setDirections] = useState<ColumnDirections>({
+    rank: 'asc',
+    bib: 'asc',
+  });
 
   const handleSort = (nextColumn: SortColumn) => {
+    const nextDirection =
+      column === nextColumn ? flipDirection(directions[nextColumn]) : 'asc';
     setDirections((current) => ({
       ...current,
-      [nextColumn]: flipDirection(current[nextColumn]),
+      [nextColumn]: nextDirection,
     }));
     setColumn(nextColumn);
   };
 
-  const sortedRows = sortResults(results, column, directions[column]);
+  const sortedRows = column
+    ? sortResults(results, column, directions[column])
+    : results;
 
   return (
     <Box>
@@ -101,7 +112,16 @@ export function ResultsTable() {
           <caption className={captionClass}>{copy.resultsCaption}</caption>
           <thead>
             <tr>
-              <th className={headerCellClass}>
+              <th
+                className={headerCellClass}
+                aria-sort={
+                  column === 'rank'
+                    ? directions.rank === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : undefined
+                }
+              >
                 <button
                   type="button"
                   aria-label="Sort by rank"
@@ -109,19 +129,34 @@ export function ResultsTable() {
                   onClick={() => handleSort('rank')}
                 >
                   {copy.rank}
+                  <SortIndicator
+                    direction={column === 'rank' ? directions.rank : null}
+                  />
                 </button>
               </th>
-              <th className={headerCellClass}>
+              <th
+                className={headerCellClass}
+                aria-sort={
+                  column === 'bib'
+                    ? directions.bib === 'asc'
+                      ? 'ascending'
+                      : 'descending'
+                    : undefined
+                }
+              >
                 <button
                   type="button"
-                  aria-label="Sort by rank"
+                  aria-label="Sort by bib"
                   className={sortButtonClass}
                   onClick={() => handleSort('bib')}
                 >
                   {copy.bib}
+                  <SortIndicator
+                    direction={column === 'bib' ? directions.bib : null}
+                  />
                 </button>
               </th>
-              <th className={headerCellClass} />
+              <th className={headerCellClass}>{copy.athlete}</th>
               <th className={headerCellClass}>{copy.noc}</th>
               <th className={headerCellClass}>{copy.status}</th>
             </tr>
@@ -134,21 +169,13 @@ export function ResultsTable() {
                 <td className={bodyCellClass}>{row.athlete}</td>
                 <td className={bodyCellClass}>{row.noc}</td>
                 <td className={cx(bodyCellClass, standingClass[row.standing])}>
-                  {copy.statusMark}
+                  {row.standing}
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
       </Box>
-      <table className={css({ srOnly: true })}>
-        <caption>{copy.resultsCaption}</caption>
-        <tbody>
-          <tr>
-            <td>{copy.statusMark}</td>
-          </tr>
-        </tbody>
-      </table>
     </Box>
   );
 }

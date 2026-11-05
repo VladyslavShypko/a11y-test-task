@@ -49,8 +49,8 @@ export const copy = {
   rank: 'Rank',
   bib: 'Bib',
   noc: 'NOC',
+  athlete: 'Athlete',
   status: 'Status',
-  statusMark: '—',
 } as const;
 
 export const views: readonly ViewOption[] = [
@@ -92,11 +92,26 @@ export const sessions: readonly Session[] = [
 export const results: readonly AthleteResult[] = [
   { rank: 1, bib: 7, athlete: 'Lena Berg', noc: 'SWE', standing: 'Qualified' },
   { rank: 2, bib: 14, athlete: 'Maya Chen', noc: 'CAN', standing: 'Qualified' },
-  { rank: 3, bib: 3, athlete: 'Sofia Rossi', noc: 'ITA', standing: 'Eliminated' },
-  { rank: 4, bib: 21, athlete: 'Hana Novak', noc: 'CZE', standing: 'Eliminated' },
+  {
+    rank: 3,
+    bib: 3,
+    athlete: 'Sofia Rossi',
+    noc: 'ITA',
+    standing: 'Eliminated',
+  },
+  {
+    rank: 4,
+    bib: 21,
+    athlete: 'Hana Novak',
+    noc: 'CZE',
+    standing: 'Eliminated',
+  },
 ];
 
-export const filterSessions = (items: readonly Session[], filter: SessionFilterId): Session[] => {
+export const filterSessions = (
+  items: readonly Session[],
+  filter: SessionFilterId,
+): Session[] => {
   if (filter === 'live') {
     return items.filter((session) => session.status === 'Live');
   }

@@ -1,6 +1,6 @@
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { css } from 'styled-system/css';
 import { Stack } from 'styled-system/jsx';
-import { useCallback, useState } from 'react';
 
 import { AlertsModal } from './components/AlertsModal';
 import { ResultsTable } from './components/ResultsTable';
@@ -8,16 +8,38 @@ import { ScheduleList } from './components/ScheduleList';
 import { SessionFilters } from './components/SessionFilters';
 import { SiteHeader } from './components/SiteHeader';
 import { ViewSwitcher } from './components/ViewSwitcher';
-import { copy, filterSessions, type SessionFilterId, sessions, type ViewId } from './data/fixtures';
+import {
+  copy,
+  filterSessions,
+  type SessionFilterId,
+  sessions,
+  type ViewId,
+} from './data/fixtures';
 
 export function App() {
   const [activeView, setActiveView] = useState<ViewId>('schedule');
   const [activeFilter, setActiveFilter] = useState<SessionFilterId>('all');
   const [isAlertsOpen, setIsAlertsOpen] = useState(false);
+  const [isDarkTheme, setIsDarkTheme] = useState(false);
+  const manageAlertsButtonRef = useRef<HTMLButtonElement>(null);
+  const shouldRestoreAlertsFocus = useRef(false);
+
+  useEffect(() => {
+    document.documentElement.classList.toggle('dark', isDarkTheme);
+    document.documentElement.classList.toggle('light', !isDarkTheme);
+  }, [isDarkTheme]);
 
   const handleCloseAlerts = useCallback(() => {
+    shouldRestoreAlertsFocus.current = true;
     setIsAlertsOpen(false);
   }, []);
+
+  useEffect(() => {
+    if (!isAlertsOpen && shouldRestoreAlertsFocus.current) {
+      shouldRestoreAlertsFocus.current = false;
+      manageAlertsButtonRef.current?.focus();
+    }
+  }, [isAlertsOpen]);
 
   const visibleSessions = filterSessions(sessions, activeFilter);
 
@@ -33,23 +55,52 @@ export function App() {
       })}
     >
       <Stack gap="6">
-        <SiteHeader onManageAlerts={() => setIsAlertsOpen(true)} />
+        <SiteHeader
+          isDarkTheme={isDarkTheme}
+          manageAlertsButtonRef={manageAlertsButtonRef}
+          onToggleTheme={() => setIsDarkTheme((current) => !current)}
+          onManageAlerts={() => setIsAlertsOpen(true)}
+        />
         {isAlertsOpen && <AlertsModal onClose={handleCloseAlerts} />}
         <ViewSwitcher activeView={activeView} onViewChange={setActiveView} />
         {activeView === 'schedule' && (
-          <section className={css({ display: 'flex', flexDirection: 'column', gap: '4' })}>
-            <SessionFilters activeFilter={activeFilter} onFilterChange={setActiveFilter} />
+          <section
+            id="schedule-panel"
+            role="tabpanel"
+            aria-labelledby="schedule-view-tab"
+            className={css({
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '4',
+            })}
+          >
+            <SessionFilters
+              activeFilter={activeFilter}
+              onFilterChange={setActiveFilter}
+            />
             <ScheduleList sessions={visibleSessions} />
           </section>
         )}
         {activeView === 'results' && (
-          <section>
+          <section
+            id="results-panel"
+            role="tabpanel"
+            aria-labelledby="results-view-tab"
+          >
             <ResultsTable />
           </section>
         )}
         {activeView === 'medals' && (
-          <section>
-            <p className={css({ color: 'text.primary', textStyle: 't_medium' })}>{copy.medals}</p>
+          <section
+            id="medals-panel"
+            role="tabpanel"
+            aria-labelledby="medals-view-tab"
+          >
+            <p
+              className={css({ color: 'text.primary', textStyle: 't_medium' })}
+            >
+              {copy.medals}
+            </p>
           </section>
         )}
       </Stack>

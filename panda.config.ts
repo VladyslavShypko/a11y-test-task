@@ -1,4 +1,8 @@
-import { defineConfig, defineSemanticTokens, defineTextStyles } from '@pandacss/dev';
+import {
+  defineConfig,
+  defineSemanticTokens,
+  defineTextStyles,
+} from '@pandacss/dev';
 
 /**
  * Self-contained Panda setup for the Championship Day exercise.
@@ -9,7 +13,9 @@ import { defineConfig, defineSemanticTokens, defineTextStyles } from '@pandacss/
 
 const inter = 'Inter, ui-sans-serif, system-ui, sans-serif';
 
-const sv = (light: string, dark: string) => ({ value: { _light: light, _dark: dark } });
+const sv = (light: string, dark: string) => ({
+  value: { _light: light, _dark: dark },
+});
 
 const colors = defineSemanticTokens.colors({
   surface: {
@@ -27,8 +33,8 @@ const colors = defineSemanticTokens.colors({
     selected: sv('#5329ff', '#6e49ff'),
   },
   feedback: {
-    success: { bg: sv('#d6f1e8', '#282d3a') },
-    error: { bg: sv('#fde2e7', '#282d3a') },
+    success: { bg: sv('#d6f1e8', '#1f513b') },
+    error: { bg: sv('#fde2e7', '#5b2833') },
   },
   focus: {
     default: sv('#0078d0', '#72baef'),
