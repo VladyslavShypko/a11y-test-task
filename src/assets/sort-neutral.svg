@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg">
+  <title>Sort direction indicators</title>
+  <symbol id="sort-up" viewBox="0 0 24 12">
+    <path d="M7 9 12 4 17 9 15.5 9 12 5.5 8.5 9Z" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+  <symbol id="sort-down" viewBox="0 0 24 12">
+    <path d="M7 3 8.5 3 12 6.5 15.5 3 17 3 12 8Z" stroke-linecap="round" stroke-linejoin="round"/>
+  </symbol>
+</svg>

@@ -1,6 +1,4 @@
 import { css } from 'styled-system/css';
-import type { MouseEvent } from 'react';
-
 import { type ViewId, type ViewOption, views } from '../data/fixtures';
 
 export interface ViewSwitcherProps {
@@ -33,11 +31,6 @@ const tabClass = css({
 });
 
 export function ViewSwitcher({ activeView, onViewChange }: ViewSwitcherProps) {
-  const handleSelect = (event: MouseEvent<HTMLAnchorElement>, view: ViewId) => {
-    event.preventDefault();
-    onViewChange(view);
-  };
-
   return (
     <div
       role="tablist"
@@ -52,16 +45,18 @@ export function ViewSwitcher({ activeView, onViewChange }: ViewSwitcherProps) {
       })}
     >
       {views.map((view: ViewOption) => (
-        <a
+        <button
           key={view.id}
-          href={view.href}
           role="tab"
+          type="button"
+          id={`${view.id}-view-tab`}
           aria-selected={view.id === activeView}
+          aria-controls={`${view.id}-panel`}
           className={tabClass}
-          onClick={(event) => handleSelect(event, view.id)}
+          onClick={() => onViewChange(view.id)}
         >
           {view.label}
-        </a>
+        </button>
       ))}
     </div>
   );

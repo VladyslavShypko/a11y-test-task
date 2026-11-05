@@ -38,24 +38,25 @@ const selectedChipClass = css({
   _hover: { bg: 'action.brand_hover' },
 });
 
-export function SessionFilters({ activeFilter, onFilterChange }: SessionFiltersProps) {
+export function SessionFilters({
+  activeFilter,
+  onFilterChange,
+}: SessionFiltersProps) {
   return (
     <Flex direction={{ base: 'column', md: 'row' }} gap="2">
-      {sessionFilters.map((filter, index) => {
+      {sessionFilters.map((filter) => {
         const isSelected = filter.id === activeFilter;
 
         return (
-          <div
+          <button
+            type="button"
             key={filter.id}
             className={cx(chipClass, isSelected && selectedChipClass)}
-            {...{
-              role: 'button',
-              tabIndex: index === 0 ? 0 : -1,
-              onClick: () => onFilterChange(filter.id),
-            }}
+            aria-pressed={isSelected}
+            onClick={() => onFilterChange(filter.id)}
           >
             {filter.label}
-          </div>
+          </button>
         );
       })}
     </Flex>
